@@ -18,6 +18,13 @@
         </resources>
     </build>
     <dependencies>
+        <!-- JSONObject -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20180813</version>
+            <type>jar</type>
+        </dependency>
         <!-- Oracle JDBC driver -->
         <dependency>
             <groupId>com.oracle</groupId>

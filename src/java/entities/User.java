@@ -9,12 +9,12 @@ public class User {
     private Session session;
     private String username;
 
-    private List<User> follower;
+    private List<User> followers;
 
     public User(Session session, String username) {
         this.session = session;
         this.username = username;
-        this.follower = new ArrayList<>();
+        this.followers = new ArrayList<>();
     }
 
     public Session getSession() {
@@ -33,11 +33,11 @@ public class User {
         this.username = username;
     }
 
-    public List<User> getFollower() {
-        return follower;
+    public List<User> getFollowers() {
+        return followers;
     }
 
-    public void setFollower(List<User> follower) {
-        this.follower = follower;
+    public void setFollowers(List<User> followers) {
+        this.followers = followers;
     }
 }

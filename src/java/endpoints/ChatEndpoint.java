@@ -19,8 +19,8 @@ public class ChatEndpoint {
     }
 
     @OnMessage
-    public void onMessage(String message, Session session) {
-        Repository.getInstance().sendMessage(message, session);
+    public void onMessage(Session session, String message) {
+        Repository.getInstance().sendMessage(session, message);
     }
 
     @OnError
