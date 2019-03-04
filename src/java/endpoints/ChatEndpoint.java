@@ -1,34 +1,26 @@
 package endpoints;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import entities.User;
+import repositories.Repository;
+
+import javax.websocket.*;
+import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
 /**
  * @author Alexander Burghuber
  */
-@ServerEndpoint("/chat")
+@ServerEndpoint("/chat/{username}")
 public class ChatEndpoint {
 
-    private static Set<Session> sessions = Collections.synchronizedSet(new HashSet<Session>());
-
     @OnOpen
-    public void onOpen(Session session) throws IOException {
-        sessions.add(session);
+    public void onOpen(Session session, @PathParam("username") String username) {
+        Repository.getInstance().addUser(new User(session, username));
     }
 
     @OnMessage
-    public void distribute(String message, Session session) {
-        for (Session client : sessions) {
-            client.getAsyncRemote().sendText(message);
-        }
+    public void onMessage(String message, Session session) {
+        Repository.getInstance().sendMessage(message, session);
     }
 
     @OnError
@@ -38,7 +30,6 @@ public class ChatEndpoint {
 
     @OnClose
     public void onClose(Session session) {
-        sessions.remove(session);
     }
 
 }
