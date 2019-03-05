@@ -1,5 +1,8 @@
 package endpoints;
 
+import decoders.MessageDecoder;
+import encoders.MessageEncoder;
+import entities.Message;
 import entities.User;
 import repositories.Repository;
 
@@ -10,7 +13,9 @@ import javax.websocket.server.ServerEndpoint;
 /**
  * @author Alexander Burghuber
  */
-@ServerEndpoint("/chat/{username}")
+@ServerEndpoint(value = "/chat/{username}",
+        decoders = MessageDecoder.class,
+        encoders = MessageEncoder.class)
 public class ChatEndpoint {
 
     @OnOpen
@@ -19,7 +24,7 @@ public class ChatEndpoint {
     }
 
     @OnMessage
-    public void onMessage(Session session, String message) {
+    public void onMessage(Session session, Message message) {
         Repository.getInstance().sendMessage(session, message);
     }
 
