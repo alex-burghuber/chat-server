@@ -1,11 +1,11 @@
-package entities;
+package transferObjects;
 
-public class Message {
+public class MessageVO {
 
     private String to;
     private String content;
 
-    public Message(String to, String content) {
+    public MessageVO(String to, String content) {
         this.to = to;
         this.content = content;
     }

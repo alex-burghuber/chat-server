@@ -1,10 +1,10 @@
 package main;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import endpoints.ChatEndpoint;
 import org.glassfish.tyrus.server.Server;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 /**
  * @author Alexander Burghuber

@@ -1,17 +1,17 @@
-package entities;
+package transferObjects;
 
 import javax.websocket.Session;
 import java.util.ArrayList;
 import java.util.List;
 
-public class User {
+public class UserVO {
 
     private Session session;
     private String username;
 
-    private List<User> followers;
+    private List<UserVO> followers;
 
-    public User(Session session, String username) {
+    public UserVO(Session session, String username) {
         this.session = session;
         this.username = username;
         this.followers = new ArrayList<>();
@@ -33,11 +33,11 @@ public class User {
         this.username = username;
     }
 
-    public List<User> getFollowers() {
+    public List<UserVO> getFollowers() {
         return followers;
     }
 
-    public void setFollowers(List<User> followers) {
+    public void setFollowers(List<UserVO> followers) {
         this.followers = followers;
     }
 }

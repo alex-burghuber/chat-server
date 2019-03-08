@@ -1,18 +1,18 @@
 package decoders;
 
-import entities.Message;
 import org.json.JSONException;
 import org.json.JSONObject;
+import transferObjects.MessageVO;
 
 import javax.websocket.Decoder;
 import javax.websocket.EndpointConfig;
 
-public class MessageDecoder implements Decoder.Text<Message> {
+public class MessageDecoder implements Decoder.Text<MessageVO> {
 
     @Override
-    public Message decode(String str) {
+    public MessageVO decode(String str) {
         JSONObject json = new JSONObject(str);
-        return new Message(json.getString("to"), json.getString("content"));
+        return new MessageVO(json.getString("to"), json.getString("content"));
     }
 
     @Override

@@ -2,9 +2,9 @@ package endpoints;
 
 import decoders.MessageDecoder;
 import encoders.MessageEncoder;
-import entities.Message;
-import entities.User;
 import repositories.Repository;
+import transferObjects.MessageVO;
+import transferObjects.UserVO;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
@@ -20,11 +20,11 @@ public class ChatEndpoint {
 
     @OnOpen
     public void onOpen(Session session, @PathParam("username") String username) {
-        Repository.getInstance().addUser(new User(session, username));
+        Repository.getInstance().addUser(new UserVO(session, username));
     }
 
     @OnMessage
-    public void onMessage(Session session, Message message) {
+    public void onMessage(Session session, MessageVO message) {
         Repository.getInstance().sendMessage(session, message);
     }
 

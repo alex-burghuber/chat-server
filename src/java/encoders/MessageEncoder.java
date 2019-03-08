@@ -1,15 +1,15 @@
 package encoders;
 
-import entities.Message;
 import org.json.JSONObject;
+import transferObjects.MessageVO;
 
 import javax.websocket.Encoder;
 import javax.websocket.EndpointConfig;
 
-public class MessageEncoder implements Encoder.Text<Message> {
+public class MessageEncoder implements Encoder.Text<MessageVO> {
 
     @Override
-    public String encode(Message message) {
+    public String encode(MessageVO message) {
         return new JSONObject(message).toString();
     }
 
