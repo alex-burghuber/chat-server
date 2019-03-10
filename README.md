@@ -5,7 +5,7 @@ Simple Java Websocket Server
 ### Messages
 ```json
 {
-  "message": {
+  "chat": {
     "target": "user/group",
     "name": "<name of user or group>",
     "content": "<content>"
@@ -15,7 +15,7 @@ Simple Java Websocket Server
 ### Group managing
 ```json
 {
-  "manage-group": {
+  "group": {
     "action": "create/join",
     "name": "<name of group>"
   }
