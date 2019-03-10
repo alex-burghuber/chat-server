@@ -15,7 +15,7 @@ Simple Java Websocket Server
 ### Group managing
 ```json
 {
-  "group": {
+  "manage-group": {
     "action": "create/join",
     "name": "<name of group>"
   }
