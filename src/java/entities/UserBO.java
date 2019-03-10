@@ -1,35 +1,51 @@
 package entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
+import javax.websocket.Session;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "Chat_User")
+@NamedQueries({
+        @NamedQuery(name = "User.get-with-username", query = "SELECT u FROM UserBO u WHERE u.username = :username")
+})
 public class UserBO {
 
     @Id
     @GeneratedValue
     private long id;
 
+    @Transient
+    private Session session;
+
+    @Column(unique = true)
     private String username;
 
-    @OneToMany
-    private List<UserBO> followers;
+    @ManyToMany(mappedBy = "members", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    private List<GroupBO> groups;
 
     public UserBO() {
-        this.followers = new ArrayList<>();
+        this.groups = new ArrayList<>();
     }
 
-    public UserBO(String username) {
+    public UserBO(Session session, String username) {
         this();
+        this.session = session;
         this.username = username;
     }
 
     public long getId() {
         return id;
+    }
+
+    public Session getSession() {
+        return session;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
     }
 
     public String getUsername() {
@@ -40,11 +56,11 @@ public class UserBO {
         this.username = username;
     }
 
-    public List<UserBO> getFollowers() {
-        return followers;
+    public List<GroupBO> getGroups() {
+        return groups;
     }
 
-    public void setFollowers(List<UserBO> followers) {
-        this.followers = followers;
+    public void setGroups(List<GroupBO> groups) {
+        this.groups = groups;
     }
 }

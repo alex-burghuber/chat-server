@@ -2,30 +2,37 @@ package endpoints;
 
 import decoders.MessageDecoder;
 import encoders.MessageEncoder;
+import messages.GroupMessage;
+import messages.Message;
 import repositories.Repository;
-import transferObjects.MessageVO;
-import transferObjects.UserVO;
+import messages.ChatMessage;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
 
 /**
  * @author Alexander Burghuber
  */
-@ServerEndpoint(value = "/chat/{username}",
+@ServerEndpoint(
+        value = "/chat/{username}",
         decoders = MessageDecoder.class,
         encoders = MessageEncoder.class)
 public class ChatEndpoint {
 
     @OnOpen
     public void onOpen(Session session, @PathParam("username") String username) {
-        Repository.getInstance().addUser(new UserVO(session, username));
+        Repository.getInstance().addUser(session, username);
     }
 
     @OnMessage
-    public void onMessage(Session session, MessageVO message) {
-        Repository.getInstance().sendMessage(session, message);
+    public void onMessage(Session session, Message message) {
+        if (message instanceof ChatMessage) {
+            Repository.getInstance().sendChat(session, (ChatMessage) message);
+        } else if (message instanceof GroupMessage) {
+            Repository.getInstance().manageGroup(session, (GroupMessage) message);
+        }
     }
 
     @OnError
@@ -35,6 +42,11 @@ public class ChatEndpoint {
 
     @OnClose
     public void onClose(Session session) {
+        try {
+            session.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

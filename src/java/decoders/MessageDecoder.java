@@ -1,33 +1,39 @@
 package decoders;
 
-import org.json.JSONException;
+import messages.ChatMessage;
+import messages.GroupMessage;
+import messages.Message;
 import org.json.JSONObject;
-import transferObjects.MessageVO;
 
+import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
 import javax.websocket.EndpointConfig;
 
-public class MessageDecoder implements Decoder.Text<MessageVO> {
+public class MessageDecoder implements Decoder.Text<Message> {
 
     @Override
-    public MessageVO decode(String str) {
+    public Message decode(String str) throws DecodeException {
         JSONObject json = new JSONObject(str);
-        return new MessageVO(json.getString("to"), json.getString("content"));
+        if (json.has("chat")) {
+            JSONObject chatJson = json.getJSONObject("chat");
+            return new ChatMessage("chat",
+                    chatJson.getString("target"),
+                    chatJson.getString("name"),
+                    chatJson.getString("content"));
+        } else if (json.has("group")) {
+            JSONObject groupJson = json.getJSONObject("group");
+            return new GroupMessage("group",
+                    groupJson.getString("action"),
+                    groupJson.getString("name"));
+        } else {
+            throw new DecodeException(str, "Can't decode");
+        }
     }
 
     @Override
     public boolean willDecode(String str) {
-        try {
-            JSONObject json = new JSONObject(str);
-            String to = json.optString("to");
-            String content = json.optString("content");
-            if (!to.isEmpty() && !content.isEmpty()) {
-                return true;
-            }
-        } catch (JSONException je) {
-            return false;
-        }
-        return false;
+        // TODO: check if valid JSON
+        return true;
     }
 
     @Override
