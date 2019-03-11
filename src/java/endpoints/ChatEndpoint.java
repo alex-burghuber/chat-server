@@ -1,33 +1,37 @@
 package endpoints;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import decoders.MessageDecoder;
+import encoders.MessageEncoder;
+import messages.GroupMessage;
+import messages.Message;
+import repositories.Repository;
+import messages.ChatMessage;
+
+import javax.websocket.*;
+import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
 
 /**
  * @author Alexander Burghuber
  */
-@ServerEndpoint("/chat")
+@ServerEndpoint(
+        value = "/chat/{username}",
+        decoders = MessageDecoder.class,
+        encoders = MessageEncoder.class)
 public class ChatEndpoint {
 
-    private static Set<Session> sessions = Collections.synchronizedSet(new HashSet<Session>());
-
     @OnOpen
-    public void onOpen(Session session) throws IOException {
-        sessions.add(session);
+    public void onOpen(Session session, @PathParam("username") String username) {
+        Repository.getInstance().addUser(session, username);
     }
 
     @OnMessage
-    public void distribute(String message, Session session) {
-        for (Session client : sessions) {
-            client.getAsyncRemote().sendText(message);
+    public void onMessage(Session session, Message message) {
+        if (message instanceof ChatMessage) {
+            Repository.getInstance().sendChat(session, (ChatMessage) message);
+        } else if (message instanceof GroupMessage) {
+            Repository.getInstance().manageGroup(session, (GroupMessage) message);
         }
     }
 
@@ -38,7 +42,11 @@ public class ChatEndpoint {
 
     @OnClose
     public void onClose(Session session) {
-        sessions.remove(session);
+        try {
+            session.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

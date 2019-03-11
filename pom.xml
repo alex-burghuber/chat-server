@@ -3,21 +3,28 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>at.htlleonding</groupId>
-    <artifactId>WebSocketChatServer</artifactId>
+    <artifactId>chat-server</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <build>
         <filters>
-            <filter>src/main/resources/properties/config.properties</filter>
+            <filter>src/resources/properties/config.properties</filter>
         </filters>
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
+                <directory>src/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
     </build>
     <dependencies>
+        <!-- JSONObject -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20180813</version>
+            <type>jar</type>
+        </dependency>
         <!-- Oracle JDBC driver -->
         <dependency>
             <groupId>com.oracle</groupId>
@@ -55,8 +62,8 @@
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-    <name>WebSocketChatServer</name>
+    <name>chat-server</name>
 </project>
