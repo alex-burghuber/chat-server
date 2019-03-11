@@ -103,14 +103,18 @@ public class Repository {
                 .setParameter("username", session.getUserProperties().get("username"))
                 .getSingleResult();
         if (action.equals("create")) {
-            // TODO: Check if group already exists
-
-            GroupBO group = new GroupBO(message.getName());
-
-            em.getTransaction().begin();
-            group.getMembers().add(user);
-            em.persist(group);
-            em.getTransaction().commit();
+            long count = em.createNamedQuery("Group.count-name", Long.class)
+                    .setParameter("name", message.getName())
+                    .getSingleResult();
+            if (count == 0) {
+                GroupBO group = new GroupBO(message.getName());
+                em.getTransaction().begin();
+                group.getMembers().add(user);
+                em.persist(group);
+                em.getTransaction().commit();
+            } else {
+                // TODO: Repsonse group already exists
+            }
         } else if (action.equals("join")) {
             List<GroupBO> groups = em.createNamedQuery("Group.get-with-name", GroupBO.class)
                     .setParameter("name", message.getName())

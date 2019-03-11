@@ -3,6 +3,7 @@ package decoders;
 import messages.ChatMessage;
 import messages.GroupMessage;
 import messages.Message;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.websocket.DecodeException;
@@ -32,8 +33,27 @@ public class MessageDecoder implements Decoder.Text<Message> {
 
     @Override
     public boolean willDecode(String str) {
-        // TODO: check if valid JSON
-        return true;
+        try {
+            JSONObject outerJson = new JSONObject(str);
+            JSONObject chatJson = outerJson.optJSONObject("chat");
+            if (chatJson != null) {
+                if (chatJson.optString("target") != null
+                        & chatJson.optString("name") != null
+                        & chatJson.optString("content") != null) {
+                    return true;
+                }
+            }
+            JSONObject groupJson = outerJson.optJSONObject("group");
+            if (groupJson != null) {
+                if (groupJson.optString("action") != null
+                        & groupJson.optString("name") != null) {
+                    return true;
+                }
+            }
+        } catch (JSONException je) {
+            return false;
+        }
+        return false;
     }
 
     @Override
