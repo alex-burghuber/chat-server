@@ -1,5 +1,5 @@
 # chat-server
-Simple Java Websocket Server
+Simple Java Websocket Chat-Server
 
 ## API
 ### Messages
