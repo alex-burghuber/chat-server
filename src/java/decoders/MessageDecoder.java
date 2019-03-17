@@ -1,5 +1,6 @@
 package decoders;
 
+import messages.AuthMessage;
 import messages.ChatMessage;
 import messages.GroupMessage;
 import messages.Message;
@@ -26,6 +27,12 @@ public class MessageDecoder implements Decoder.Text<Message> {
             return new GroupMessage("group",
                     groupJson.getString("action"),
                     groupJson.getString("name"));
+        } else if (json.has("auth")) {
+            JSONObject authJson = json.getJSONObject("auth");
+            return new AuthMessage("auth",
+                    authJson.getString("action"),
+                    authJson.getString("username"),
+                    authJson.getString("password"));
         } else {
             throw new DecodeException(str, "Can't decode");
         }
@@ -35,18 +42,26 @@ public class MessageDecoder implements Decoder.Text<Message> {
     public boolean willDecode(String str) {
         try {
             JSONObject outerJson = new JSONObject(str);
-            JSONObject chatJson = outerJson.optJSONObject("chat");
-            if (chatJson != null) {
-                if (chatJson.optString("target") != null
-                        & chatJson.optString("name") != null
-                        & chatJson.optString("content") != null) {
+            JSONObject innerJson = outerJson.optJSONObject("chat");
+            if (innerJson != null) {
+                if (innerJson.optString("target") != null
+                        && innerJson.optString("name") != null
+                        && innerJson.optString("content") != null) {
                     return true;
                 }
             }
-            JSONObject groupJson = outerJson.optJSONObject("group");
-            if (groupJson != null) {
-                if (groupJson.optString("action") != null
-                        & groupJson.optString("name") != null) {
+            innerJson = outerJson.optJSONObject("group");
+            if (innerJson != null) {
+                if (innerJson.optString("action") != null
+                        && innerJson.optString("name") != null) {
+                    return true;
+                }
+            }
+            innerJson = outerJson.optJSONObject("auth");
+            if (innerJson != null) {
+                if (innerJson.optString("action") != null
+                        && innerJson.optString("username") != null
+                        && innerJson.optString("password") != null) {
                     return true;
                 }
             }

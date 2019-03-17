@@ -2,14 +2,14 @@ package entities;
 
 import javax.persistence.*;
 import javax.websocket.Session;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "Chat_User")
 @NamedQueries({
-        @NamedQuery(name = "User.get-with-username", query = "SELECT u FROM UserBO u WHERE u.username = :username")
+        @NamedQuery(name = "User.get-with-username", query = "SELECT u FROM UserBO u WHERE u.username = :username"),
+        @NamedQuery(name = "User.count-username", query = "SELECT COUNT(u) FROM UserBO u WHERE u.username = :username")
 })
 public class UserBO {
 
@@ -20,8 +20,11 @@ public class UserBO {
     @Transient
     private Session session;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
+
+    @Column(nullable = false)
+    private String password;
 
     @ManyToMany(mappedBy = "members", cascade = {
             CascadeType.PERSIST,
@@ -33,10 +36,11 @@ public class UserBO {
         this.groups = new ArrayList<>();
     }
 
-    public UserBO(Session session, String username) {
+    public UserBO(Session session, String username, String password) {
         this();
         this.session = session;
         this.username = username;
+        this.password = password;
     }
 
     public long getId() {
@@ -57,6 +61,14 @@ public class UserBO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public List<GroupBO> getGroups() {

@@ -2,6 +2,7 @@ package repositories;
 
 import entities.GroupBO;
 import entities.UserBO;
+import messages.AuthMessage;
 import messages.ChatMessage;
 import messages.GroupMessage;
 
@@ -9,7 +10,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.websocket.Session;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -30,25 +30,35 @@ public class Repository {
         return ourInstance;
     }
 
-    public void addUser(Session session, String username) {
-        List<UserBO> users = em.createNamedQuery("User.get-with-username", UserBO.class)
-                .setParameter("username", username)
-                .getResultList();
-
-        if (users.size() == 0) {
-            session.getUserProperties().put("username", username);
-            em.getTransaction().begin();
-            em.persist(new UserBO(session, username));
-            em.getTransaction().commit();
-        } else if (users.size() == 1) {
-            session.getUserProperties().put("username", username);
-            users.get(0).setSession(session);
-        } else {
-            // TODO: Response username is already taken
-            try {
-                session.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+    public void authenticate(Session session, AuthMessage message) {
+        String action = message.getAction();
+        String username = message.getUsername();
+        String password = message.getPassword();
+        if (action.equals("register")) {
+            long count = em.createNamedQuery("User.count-username", Long.class)
+                    .setParameter("username", username)
+                    .getSingleResult();
+            if (count == 0) {
+                em.getTransaction().begin();
+                em.persist(new UserBO(session, username, password));
+                em.getTransaction().commit();
+            } else {
+                // TODO: Response username is already taken
+            }
+        } else if (action.equals("login")) {
+            List<UserBO> users = em.createNamedQuery("User.get-with-username", UserBO.class)
+                    .setParameter("username", username)
+                    .getResultList();
+            if (users.size() == 1) {
+                UserBO user = users.get(0);
+                if (user.getPassword().equals(password)) {
+                    session.getUserProperties().put("username", username);
+                    user.setSession(session);
+                } else {
+                    // TODO: Response password wrong
+                }
+            } else {
+                // TODO: Response User does not exist
             }
         }
     }
@@ -125,4 +135,5 @@ public class Repository {
             }
         }
     }
+
 }

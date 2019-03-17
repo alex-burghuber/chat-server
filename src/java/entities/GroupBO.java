@@ -16,6 +16,7 @@ public class GroupBO {
     @GeneratedValue
     private long id;
 
+    @Column(unique = true, nullable = false)
     private String name;
 
     @ManyToMany(cascade = {
