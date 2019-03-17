@@ -21,3 +21,14 @@ Simple Java Websocket Chat-Server
   }
 }
 ```
+
+### Authentication
+```json
+{
+  "auth": {
+      "action": "register/login",
+      "username": "<username of user>",
+      "password": "<password of user>"
+  }
+}
+```
