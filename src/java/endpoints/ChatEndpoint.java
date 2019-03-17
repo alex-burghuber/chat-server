@@ -23,11 +23,13 @@ public class ChatEndpoint {
 
     @OnOpen
     public void onOpen(Session session, @PathParam("username") String username) {
+        System.out.println("onOpen");
         Repository.getInstance().addUser(session, username);
     }
 
     @OnMessage
     public void onMessage(Session session, Message message) {
+        System.out.println("onMessage");
         if (message instanceof ChatMessage) {
             Repository.getInstance().sendChat(session, (ChatMessage) message);
         } else if (message instanceof GroupMessage) {
@@ -42,6 +44,7 @@ public class ChatEndpoint {
 
     @OnClose
     public void onClose(Session session) {
+        System.out.println("onClose");
         try {
             session.close();
         } catch (IOException e) {

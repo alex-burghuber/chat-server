@@ -23,7 +23,10 @@ public class UserBO {
     @Column(unique = true)
     private String username;
 
-    @ManyToMany(mappedBy = "members", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(mappedBy = "members", cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
     private List<GroupBO> groups;
 
     public UserBO() {

@@ -13,7 +13,7 @@
             <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
             <property name="javax.persistence.jdbc.password" value="${jdbc_password}"/>
             <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
-            <property name="eclipselink.logging.level.sql" value="OFF"/>
+            <property name="eclipselink.logging.level.sql" value="FINE"/>
         </properties>
     </persistence-unit>
 </persistence>

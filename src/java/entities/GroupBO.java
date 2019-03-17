@@ -18,7 +18,10 @@ public class GroupBO {
 
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
     private List<UserBO> members;
 
     public GroupBO() {

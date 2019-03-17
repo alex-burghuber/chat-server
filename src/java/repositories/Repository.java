@@ -73,27 +73,22 @@ public class Repository {
                 // TODO: Response user does not exist
             }
         } else if (target.equals("group")) {
-            UserBO user = em.createNamedQuery("User.get-with-username", UserBO.class)
-                    .setParameter("username", session.getUserProperties().get("username"))
-                    .getSingleResult();
+            List<GroupBO> groups = em.createNamedQuery("Group.get-with-name", GroupBO.class)
+                    .setParameter("name", chatMessage.getName())
+                    .getResultList();
 
-            // Refresh the user because of the many-to-many relation
-            em.refresh(user);
-
-            List<GroupBO> groupsOfUser = user.getGroups();
-            for (GroupBO group : groupsOfUser) {
-                if (group.getName().equals(chatMessage.getName())) {
-                    List<UserBO> members = group.getMembers();
-                    for (UserBO member : members) {
-                        Session memberSession = member.getSession();
-                        if (memberSession != null && memberSession.isOpen()) {
-                            member.getSession().getAsyncRemote().sendText(chatMessage.getContent());
-                        }
+            if (groups.size() == 1) {
+                GroupBO group = groups.get(0);
+                for (UserBO member : group.getMembers()) {
+                    Session memberSession = member.getSession();
+                    if (memberSession != null && memberSession.isOpen()) {
+                        memberSession.getAsyncRemote().sendText(chatMessage.getContent());
                     }
                 }
+            } else {
+                // TODO: Response group doesn't exist
             }
         }
-
     }
 
     public void manageGroup(Session session, GroupMessage message) {
@@ -113,7 +108,7 @@ public class Repository {
                 em.persist(group);
                 em.getTransaction().commit();
             } else {
-                // TODO: Repsonse group already exists
+                // TODO: Response group already exists
             }
         } else if (action.equals("join")) {
             List<GroupBO> groups = em.createNamedQuery("Group.get-with-name", GroupBO.class)
