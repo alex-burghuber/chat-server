@@ -5,6 +5,7 @@ import entities.UserBO;
 import messages.AuthMessage;
 import messages.ChatMessage;
 import messages.GroupMessage;
+import org.json.JSONObject;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -54,6 +55,9 @@ public class Repository {
                 if (user.getPassword().equals(password)) {
                     session.getUserProperties().put("username", username);
                     user.setSession(session);
+                    JSONObject json = new JSONObject();
+                    json.put("login", true);
+                    session.getAsyncRemote().sendText(json.toString());
                 } else {
                     // TODO: Response password wrong
                 }
