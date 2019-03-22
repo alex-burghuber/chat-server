@@ -1,8 +1,10 @@
 package messages;
 
-public class Message {
+import java.io.Serializable;
 
-    private String type;
+public class Message implements Serializable {
+
+    public String type;
 
     public Message(String type) {
         this.type = type;

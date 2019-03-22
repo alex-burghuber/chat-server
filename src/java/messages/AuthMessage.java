@@ -1,10 +1,12 @@
 package messages;
 
-public class AuthMessage extends Message {
+import java.io.Serializable;
 
-    private String action;
-    private String username;
-    private String password;
+public class AuthMessage extends Message implements Serializable {
+
+    public String action;
+    public String username;
+    public String password;
 
     public AuthMessage(String type, String action, String username, String password) {
         super(type);

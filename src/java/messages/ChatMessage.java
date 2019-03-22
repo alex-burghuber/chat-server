@@ -1,10 +1,12 @@
 package messages;
 
-public class ChatMessage extends Message {
+import java.io.Serializable;
 
-    private String target;
-    private String name;
-    private String content;
+public class ChatMessage extends Message implements Serializable {
+
+    public String target;
+    public String name;
+    public String content;
 
     public ChatMessage(String type, String target, String name, String content) {
         super(type);

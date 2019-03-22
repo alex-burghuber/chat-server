@@ -1,9 +1,11 @@
 package messages;
 
-public class GroupMessage extends Message {
+import java.io.Serializable;
 
-    private String action;
-    private String name;
+public class GroupMessage extends Message implements Serializable {
+
+    public String action;
+    public String name;
 
     public GroupMessage(String type, String action, String name) {
         super(type);
@@ -26,4 +28,5 @@ public class GroupMessage extends Message {
     public void setName(String name) {
         this.name = name;
     }
+
 }
