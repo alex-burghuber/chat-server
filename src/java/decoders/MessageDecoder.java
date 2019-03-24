@@ -16,26 +16,29 @@ public class MessageDecoder implements Decoder.Text<Message> {
     @Override
     public Message decode(String str) throws DecodeException {
         JSONObject json = new JSONObject(str);
+        Message message;
         if (json.has("chat")) {
             JSONObject chatJson = json.getJSONObject("chat");
-            return new ChatMessage("chat",
+            message = new ChatMessage("chat",
                     chatJson.getString("target"),
                     chatJson.getString("name"),
                     chatJson.getString("content"));
         } else if (json.has("group")) {
             JSONObject groupJson = json.getJSONObject("group");
-            return new GroupMessage("group",
+            message = new GroupMessage("group",
                     groupJson.getString("action"),
                     groupJson.getString("name"));
         } else if (json.has("auth")) {
             JSONObject authJson = json.getJSONObject("auth");
-            return new AuthMessage("auth",
+            message = new AuthMessage("auth",
                     authJson.getString("action"),
                     authJson.getString("username"),
                     authJson.getString("password"));
         } else {
             throw new DecodeException(str, "Can't decode");
         }
+        System.out.println("Decoded: " + str);
+        return message;
     }
 
     @Override
@@ -66,8 +69,9 @@ public class MessageDecoder implements Decoder.Text<Message> {
                 }
             }
         } catch (JSONException je) {
-            return false;
+            je.printStackTrace();
         }
+        System.out.println("Will not decode: " + str);
         return false;
     }
 

@@ -1,12 +1,10 @@
 package messages;
 
-import java.io.Serializable;
+public class AuthMessage extends Message {
 
-public class AuthMessage extends Message implements Serializable {
-
-    public String action;
-    public String username;
-    public String password;
+    private String action;
+    private String username;
+    private String password;
 
     public AuthMessage(String type, String action, String username, String password) {
         super(type);
@@ -38,4 +36,5 @@ public class AuthMessage extends Message implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

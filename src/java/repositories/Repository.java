@@ -2,8 +2,10 @@ package repositories;
 
 import entities.GroupBO;
 import entities.UserBO;
-import messages.*;
-import org.json.JSONObject;
+import messages.AuthMessage;
+import messages.ChatMessage;
+import messages.GroupMessage;
+import messages.StatusMessage;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -18,7 +20,6 @@ public class Repository {
 
     private static Repository ourInstance = new Repository();
     private EntityManager em;
-    //private Set<UserVO> users = Collections.synchronizedSet(new HashSet<>());
 
     private Repository() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("ChatPU");
@@ -29,58 +30,55 @@ public class Repository {
         return ourInstance;
     }
 
-    public void authenticate(Session session, AuthMessage message) {
-        String action = message.getAction();
+    public void register(Session session, AuthMessage message) {
         String username = message.getUsername();
         String password = message.getPassword();
 
-        StatusMessage status = new StatusMessage("status");
+        StatusMessage status = new StatusMessage("status", "register");
 
-        if (action.equals("register")) {
-            status.setKind("register");
+        long count = em.createNamedQuery("User.count-username", Long.class)
+                .setParameter("username", username)
+                .getSingleResult();
 
-            long count = em.createNamedQuery("User.count-username", Long.class)
-                    .setParameter("username", username)
-                    .getSingleResult();
+        if (count == 0) {
+            em.getTransaction().begin();
+            em.persist(new UserBO(session, username, password));
+            em.getTransaction().commit();
+            status.setSuccess(true);
+            session.getAsyncRemote().sendObject(status);
+        } else {
+            status.setSuccess(false);
+            status.setContent("Username is already taken");
+            session.getAsyncRemote().sendObject(status);
+        }
+    }
 
-            if (count == 0) {
-                em.getTransaction().begin();
-                em.persist(new UserBO(session, username, password));
-                em.getTransaction().commit();
+    public void login(Session session, AuthMessage message) {
+        String username = message.getUsername();
+        String password = message.getPassword();
+
+        StatusMessage status = new StatusMessage("status", "login");
+
+        List<UserBO> users = em.createNamedQuery("User.get-with-username", UserBO.class)
+                .setParameter("username", username)
+                .getResultList();
+
+        if (users.size() == 1) {
+            UserBO user = users.get(0);
+            if (user.getPassword().equals(password)) {
+                session.getUserProperties().put("username", username);
+                user.setSession(session);
                 status.setSuccess(true);
-                String json = JSONObject.valueToString(status);
-                System.out.println(json);
-                // sendMessage(status, session);
-
-            } else {
-                status.setSuccess(false);
-                status.setContent("Username is already taken");
-                sendMessage(status, session);
-            }
-        } else if (action.equals("login")) {
-            status.setKind("login");
-
-            List<UserBO> users = em.createNamedQuery("User.get-with-username", UserBO.class)
-                    .setParameter("username", username)
-                    .getResultList();
-
-            if (users.size() == 1) {
-                UserBO user = users.get(0);
-                if (user.getPassword().equals(password)) {
-                    session.getUserProperties().put("username", username);
-                    user.setSession(session);
-                    status.setSuccess(true);
-                    sendMessage(status, session);
-                } else {
-                    status.setSuccess(false);
-                    status.setContent("Username or password is wrong");
-                    sendMessage(status, session);
-                }
+                session.getAsyncRemote().sendObject(status);
             } else {
                 status.setSuccess(false);
                 status.setContent("Username or password is wrong");
-                sendMessage(status, session);
+                session.getAsyncRemote().sendObject(status);
             }
+        } else {
+            status.setSuccess(false);
+            status.setContent("Username or password is wrong");
+            session.getAsyncRemote().sendObject(status);
         }
     }
 
@@ -155,12 +153,6 @@ public class Repository {
                 // TODO: Response group doesn't exist
             }
         }
-    }
-
-    private void sendMessage(Message message, Session session) {
-        String json = JSONObject.valueToString(message);
-        System.out.println(json);
-        session.getAsyncRemote().sendText(json);
     }
 
 }

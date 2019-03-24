@@ -1,10 +1,8 @@
 package messages;
 
-import java.io.Serializable;
+public class Message {
 
-public class Message implements Serializable {
-
-    public String type;
+    private String type;
 
     public Message(String type) {
         this.type = type;
@@ -17,4 +15,5 @@ public class Message implements Serializable {
     public void setType(String type) {
         this.type = type;
     }
+
 }

@@ -1,21 +1,20 @@
 package messages;
 
-import java.io.Serializable;
+public class StatusMessage extends Message {
 
-public class StatusMessage extends Message implements Serializable {
+    private String kind;
+    private boolean isSuccess;
+    private String content;
 
-    public boolean isSuccess;
-    public String kind;
-    public String content;
-
-    public StatusMessage(String type) {
+    public StatusMessage(String type, String kind) {
         super(type);
+        this.kind = kind;
     }
 
-    public StatusMessage(String type, boolean isSuccess, String kind, String content) {
+    public StatusMessage(String type, String kind, boolean isSuccess, String content) {
         super(type);
-        this.isSuccess = isSuccess;
         this.kind = kind;
+        this.isSuccess = isSuccess;
         this.content = content;
     }
 
@@ -42,4 +41,5 @@ public class StatusMessage extends Message implements Serializable {
     public void setContent(String content) {
         this.content = content;
     }
+
 }

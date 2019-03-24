@@ -29,8 +29,14 @@ public class ChatEndpoint {
     @OnMessage
     public void onMessage(Session session, Message message) {
         System.out.println("onMessage");
+
         if (message instanceof AuthMessage) {
-            Repository.getInstance().authenticate(session, (AuthMessage) message);
+            String action = ((AuthMessage) message).getAction();
+            if (action.equals("register")) {
+                Repository.getInstance().register(session, (AuthMessage) message);
+            } else if (action.equals("login")) {
+                Repository.getInstance().login(session, (AuthMessage) message);
+            }
         } else if (session.getUserProperties().containsKey("username")) {
             if (message instanceof ChatMessage) {
                 Repository.getInstance().sendChat(session, (ChatMessage) message);
