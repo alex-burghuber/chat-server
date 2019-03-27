@@ -45,12 +45,12 @@ public class Repository {
             em.persist(new UserBO(session, username, password));
             em.getTransaction().commit();
             status.setSuccess(true);
-            session.getAsyncRemote().sendObject(status);
+            status.setContent("Success");
         } else {
             status.setSuccess(false);
             status.setContent("Username is already taken");
-            session.getAsyncRemote().sendObject(status);
         }
+        session.getAsyncRemote().sendObject(status);
     }
 
     public void login(Session session, AuthMessage message) {
@@ -69,17 +69,16 @@ public class Repository {
                 session.getUserProperties().put("username", username);
                 user.setSession(session);
                 status.setSuccess(true);
-                session.getAsyncRemote().sendObject(status);
+                status.setContent("Success");
             } else {
                 status.setSuccess(false);
                 status.setContent("Username or password is wrong");
-                session.getAsyncRemote().sendObject(status);
             }
         } else {
             status.setSuccess(false);
             status.setContent("Username or password is wrong");
-            session.getAsyncRemote().sendObject(status);
         }
+        session.getAsyncRemote().sendObject(status);
     }
 
     public void sendChat(Session session, ChatMessage chatMessage) {
