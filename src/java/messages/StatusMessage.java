@@ -3,7 +3,7 @@ package messages;
 public class StatusMessage extends Message {
 
     private String kind;
-    private boolean isSuccess;
+    private boolean success;
     private String content;
 
     public StatusMessage(String type, String kind) {
@@ -11,19 +11,19 @@ public class StatusMessage extends Message {
         this.kind = kind;
     }
 
-    public StatusMessage(String type, String kind, boolean isSuccess, String content) {
+    public StatusMessage(String type, String kind, boolean success, String content) {
         super(type);
         this.kind = kind;
-        this.isSuccess = isSuccess;
+        this.success = success;
         this.content = content;
     }
 
     public boolean isSuccess() {
-        return isSuccess;
+        return success;
     }
 
     public void setSuccess(boolean success) {
-        isSuccess = success;
+        this.success = success;
     }
 
     public String getKind() {
