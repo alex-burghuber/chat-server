@@ -12,7 +12,7 @@
             <property name="javax.persistence.jdbc.user" value="${jdbc_user}"/>
             <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
             <property name="javax.persistence.jdbc.password" value="${jdbc_password}"/>
-            <!--<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>-->
+            <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
             <property name="eclipselink.logging.level.sql" value="INFO"/>
         </properties>
     </persistence-unit>
