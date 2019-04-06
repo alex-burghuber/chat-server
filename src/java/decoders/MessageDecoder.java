@@ -16,26 +16,28 @@ public class MessageDecoder implements Decoder.Text<Message> {
     @Override
     public Message decode(String str) throws DecodeException {
         JSONObject json = new JSONObject(str);
+        String type = json.getString("type");
         Message message;
-        if (json.has("chat")) {
-            JSONObject chatJson = json.getJSONObject("chat");
-            message = new ChatMessage("chat",
-                    chatJson.getString("target"),
-                    chatJson.getString("name"),
-                    chatJson.getString("content"));
-        } else if (json.has("group")) {
-            JSONObject groupJson = json.getJSONObject("group");
-            message = new GroupMessage("group",
-                    groupJson.getString("action"),
-                    groupJson.getString("name"));
-        } else if (json.has("auth")) {
-            JSONObject authJson = json.getJSONObject("auth");
-            message = new AuthMessage("auth",
-                    authJson.getString("action"),
-                    authJson.getString("username"),
-                    authJson.getString("password"));
-        } else {
-            throw new DecodeException(str, "Can't decode");
+        switch (type) {
+            case "chat":
+                message = new ChatMessage("chat",
+                        json.getString("target"),
+                        json.getString("name"),
+                        json.getString("content"));
+                break;
+            case "group":
+                message = new GroupMessage("group",
+                        json.getString("action"),
+                        json.getString("name"));
+                break;
+            case "auth":
+                message = new AuthMessage("auth",
+                        json.getString("action"),
+                        json.getString("username"),
+                        json.getString("password"));
+                break;
+            default:
+                throw new DecodeException(str, "Can't decode");
         }
         System.out.println("Decoded: " + str);
         return message;
@@ -44,28 +46,30 @@ public class MessageDecoder implements Decoder.Text<Message> {
     @Override
     public boolean willDecode(String str) {
         try {
-            JSONObject outerJson = new JSONObject(str);
-            JSONObject innerJson = outerJson.optJSONObject("chat");
-            if (innerJson != null) {
-                if (innerJson.optString("target") != null
-                        && innerJson.optString("name") != null
-                        && innerJson.optString("content") != null) {
-                    return true;
-                }
-            }
-            innerJson = outerJson.optJSONObject("group");
-            if (innerJson != null) {
-                if (innerJson.optString("action") != null
-                        && innerJson.optString("name") != null) {
-                    return true;
-                }
-            }
-            innerJson = outerJson.optJSONObject("auth");
-            if (innerJson != null) {
-                if (innerJson.optString("action") != null
-                        && innerJson.optString("username") != null
-                        && innerJson.optString("password") != null) {
-                    return true;
+            JSONObject json = new JSONObject(str);
+            String type = json.optString("type");
+            if (type != null) {
+                switch (type) {
+                    case "chat":
+                        if (json.optString("target") != null
+                                && json.optString("name") != null
+                                && json.optString("content") != null) {
+                            return true;
+                        }
+                        break;
+                    case "group":
+                        if (json.optString("action") != null
+                                && json.optString("name") != null) {
+                            return true;
+                        }
+                        break;
+                    case "auth":
+                        if (json.optString("action") != null
+                                && json.optString("username") != null
+                                && json.optString("password") != null) {
+                            return true;
+                        }
+                        break;
                 }
             }
         } catch (JSONException je) {
