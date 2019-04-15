@@ -13,6 +13,16 @@ public class AuthMessage extends Message {
         this.password = password;
     }
 
+    @Override
+    public String getType() {
+        return super.getType();
+    }
+
+    @Override
+    public void setType(String type) {
+        super.setType(type);
+    }
+
     public String getAction() {
         return action;
     }

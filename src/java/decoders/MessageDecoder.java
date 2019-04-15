@@ -21,8 +21,9 @@ public class MessageDecoder implements Decoder.Text<Message> {
         switch (type) {
             case "chat":
                 message = new ChatMessage("chat",
-                        json.getString("target"),
-                        json.getString("name"),
+                        json.getString("sender"),
+                        json.getString("receiver"),
+                        json.getString("kind"),
                         json.getString("content"));
                 break;
             case "group":
@@ -51,8 +52,9 @@ public class MessageDecoder implements Decoder.Text<Message> {
             if (type != null) {
                 switch (type) {
                     case "chat":
-                        if (json.optString("target") != null
-                                && json.optString("name") != null
+                        if (json.optString("sender") != null
+                                && json.optString("receiver") != null
+                                && json.optString("kind") != null
                                 && json.optString("content") != null) {
                             return true;
                         }

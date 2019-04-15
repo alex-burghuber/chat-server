@@ -33,14 +33,18 @@ public class ChatEndpoint {
         if (message instanceof AuthMessage) {
             String action = ((AuthMessage) message).getAction();
             if (action.equals("register")) {
+                System.out.println("Register");
                 Repository.getInstance().register(session, (AuthMessage) message);
             } else if (action.equals("login")) {
+                System.out.println("Login");
                 Repository.getInstance().login(session, (AuthMessage) message);
             }
         } else if (session.getUserProperties().containsKey("username")) {
             if (message instanceof ChatMessage) {
+                System.out.println("ChatMessage");
                 Repository.getInstance().sendChat(session, (ChatMessage) message);
             } else if (message instanceof GroupMessage) {
+                System.out.println("GroupMessage");
                 Repository.getInstance().manageGroup(session, (GroupMessage) message);
             }
         }

@@ -11,7 +11,7 @@ public class MessageEncoder implements Encoder.Text<Message> {
     @Override
     public String encode(Message message) {
         String jsonString = new JSONObject(message).toString();
-        System.out.println("Encoded:" + jsonString);
+        System.out.println("Encoded: " + jsonString);
         return jsonString;
     }
 
@@ -22,4 +22,5 @@ public class MessageEncoder implements Encoder.Text<Message> {
     @Override
     public void destroy() {
     }
+
 }

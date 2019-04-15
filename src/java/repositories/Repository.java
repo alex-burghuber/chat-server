@@ -82,40 +82,41 @@ public class Repository {
     }
 
     public void sendChat(Session session, ChatMessage chatMessage) {
-        String target = chatMessage.getTarget();
-        if (target.equals("user")) {
-            List<UserBO> users = em.createNamedQuery("User.get-with-username", UserBO.class)
-                    .setParameter("username", chatMessage.getName())
-                    .getResultList();
-
-            if (users.size() == 1) {
-                UserBO userOfTarget = users.get(0);
-                Session sessionOfTarget = userOfTarget.getSession();
-                if (sessionOfTarget != null && sessionOfTarget.isOpen()) {
-                    String usernameOfSender = (String) session.getUserProperties().get("username");
-                    sessionOfTarget.getAsyncRemote().sendText("From " + usernameOfSender + ": " + chatMessage.getContent());
-                } else {
-                    // TODO: Response target is not online
-                }
-            } else {
-                // TODO: Response user does not exist
-            }
-        } else if (target.equals("group")) {
-            List<GroupBO> groups = em.createNamedQuery("Group.get-with-name", GroupBO.class)
-                    .setParameter("name", chatMessage.getName())
-                    .getResultList();
-
-            if (groups.size() == 1) {
-                GroupBO group = groups.get(0);
-                for (UserBO member : group.getMembers()) {
-                    Session memberSession = member.getSession();
-                    if (memberSession != null && memberSession.isOpen()) {
-                        memberSession.getAsyncRemote().sendText(chatMessage.getContent());
+        if (chatMessage.getSender().equals(session.getUserProperties().get("username"))) {
+            String kind = chatMessage.getKind();
+            if (kind.equals("user")) {
+                List<UserBO> users = em.createNamedQuery("User.get-with-username", UserBO.class)
+                        .setParameter("username", chatMessage.getReceiver())
+                        .getResultList();
+                if (users.size() == 1) {
+                    Session toSession = users.get(0).getSession();
+                    if (toSession != null && toSession.isOpen()) {
+                        System.out.println("Send ChatMessage: " + chatMessage.getContent());
+                        toSession.getAsyncRemote().sendObject(chatMessage);
+                    } else {
+                        System.out.println("To-User is not online");
                     }
+                } else {
+                    System.out.println("To-User does not exist");
                 }
-            } else {
-                // TODO: Response group doesn't exist
+            } else if (kind.equals("group")) {
+                List<GroupBO> groups = em.createNamedQuery("Group.get-with-name", GroupBO.class)
+                        .setParameter("name", chatMessage.getReceiver())
+                        .getResultList();
+                if (groups.size() == 1) {
+                    GroupBO group = groups.get(0);
+                    for (UserBO member : group.getMembers()) {
+                        Session memberSession = member.getSession();
+                        if (memberSession != null && memberSession.isOpen()) {
+                            memberSession.getAsyncRemote().sendObject(chatMessage);
+                        }
+                    }
+                } else {
+                    System.out.println("Group does not exist");
+                }
             }
+        } else {
+            System.out.println("From-user and Session-user are not the same");
         }
     }
 
