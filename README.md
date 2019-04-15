@@ -3,17 +3,19 @@ Simple Java Websocket Chat-Server
 
 ## API
 
-### Requests:
-
 #### Chat
 ```json
 {
   "type": "chat",
-  "target": "user/group",
-  "name": "<name of user or group>",
+  "sender": "<name of user>",
+  "receiver": "<name of user/group>",
+  "kind": "user/group",
   "content": "<content>"
 }
 ```
+
+### Requests:
+
 #### Group managing
 ```json
 {
