@@ -6,11 +6,6 @@ public class StatusMessage extends Message {
     private boolean success;
     private String content;
 
-    public StatusMessage(String type, String kind) {
-        super(type);
-        this.kind = kind;
-    }
-
     public StatusMessage(String type, String kind, boolean success, String content) {
         super(type);
         this.kind = kind;

@@ -42,7 +42,7 @@ public class ChatEndpoint {
         } else if (session.getUserProperties().containsKey("username")) {
             if (message instanceof ChatMessage) {
                 System.out.println("ChatMessage");
-                Repository.getInstance().sendChat(session, (ChatMessage) message);
+                Repository.getInstance().send(session, (ChatMessage) message);
             } else if (message instanceof GroupMessage) {
                 System.out.println("GroupMessage");
                 Repository.getInstance().manageGroup(session, (GroupMessage) message);

@@ -5,13 +5,15 @@ public class ChatMessage extends Message {
     private String sender;
     private String receiver;
     private String kind;
+    private long time;
     private String content;
 
-    public ChatMessage(String type, String sender, String receiver, String kind, String content) {
+    public ChatMessage(String type, String sender, String receiver, String kind, long time, String content) {
         super(type);
         this.sender = sender;
         this.receiver = receiver;
         this.kind = kind;
+        this.time = time;
         this.content = content;
     }
 
@@ -47,6 +49,14 @@ public class ChatMessage extends Message {
 
     public void setKind(String kind) {
         this.kind = kind;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 
     public String getContent() {

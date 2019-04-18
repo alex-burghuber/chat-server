@@ -24,6 +24,7 @@ public class MessageDecoder implements Decoder.Text<Message> {
                         json.getString("sender"),
                         json.getString("receiver"),
                         json.getString("kind"),
+                        json.getLong("time"),
                         json.getString("content"));
                 break;
             case "group":
@@ -55,6 +56,7 @@ public class MessageDecoder implements Decoder.Text<Message> {
                         if (json.optString("sender") != null
                                 && json.optString("receiver") != null
                                 && json.optString("kind") != null
+                                && json.optLong("time") != 0L
                                 && json.optString("content") != null) {
                             return true;
                         }
