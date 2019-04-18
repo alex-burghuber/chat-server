@@ -10,6 +10,7 @@ Simple Java Websocket Chat-Server
   "sender": "<name of user>",
   "receiver": "<name of user/group>",
   "kind": "user/group",
+  "time": "<sent date in milliseconds>",
   "content": "<content>"
 }
 ```
