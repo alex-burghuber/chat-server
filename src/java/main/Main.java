@@ -24,7 +24,7 @@ public class Main {
         try {
             server.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            System.out.print("Please press a key to stop the chat-server.");
+            System.out.println("Please press a key to stop the chat-server.");
             reader.readLine();
         } catch (Exception e) {
             throw new RuntimeException(e);

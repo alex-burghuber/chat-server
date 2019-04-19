@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "Chat_Group")
+@Table(name = "ChatServer_Group")
 @NamedQueries({
-        @NamedQuery(name = "Group.get-with-name", query = "SELECT g FROM GroupBO g WHERE g.name = :name"),
-        @NamedQuery(name = "Group.count-name", query = "SELECT COUNT(g) FROM GroupBO g WHERE g.name = :name")
+        @NamedQuery(name = "Group.get-with-name", query = "SELECT g FROM GroupBO g WHERE g.name = :name")
 })
 public class GroupBO {
 
@@ -18,11 +17,11 @@ public class GroupBO {
 
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<UserBO> members;
+    @ManyToMany
+    private List<UserBO> users;
 
     public GroupBO() {
-        this.members = new ArrayList<>();
+        this.users = new ArrayList<>();
     }
 
     public GroupBO(String name) {
@@ -42,11 +41,12 @@ public class GroupBO {
         this.name = name;
     }
 
-    public List<UserBO> getMembers() {
-        return members;
+    public List<UserBO> getUsers() {
+        return users;
     }
 
-    public void setMembers(List<UserBO> members) {
-        this.members = members;
+    public void setUsers(List<UserBO> users) {
+        this.users = users;
     }
+
 }

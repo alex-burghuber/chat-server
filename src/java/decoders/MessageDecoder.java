@@ -1,5 +1,6 @@
 package decoders;
 
+import messages.AuthMessage;
 import messages.ChatMessage;
 import messages.GroupMessage;
 import messages.Message;
@@ -15,44 +16,70 @@ public class MessageDecoder implements Decoder.Text<Message> {
     @Override
     public Message decode(String str) throws DecodeException {
         JSONObject json = new JSONObject(str);
-        if (json.has("chat")) {
-            JSONObject chatJson = json.getJSONObject("chat");
-            return new ChatMessage("chat",
-                    chatJson.getString("target"),
-                    chatJson.getString("name"),
-                    chatJson.getString("content"));
-        } else if (json.has("group")) {
-            JSONObject groupJson = json.getJSONObject("group");
-            return new GroupMessage("group",
-                    groupJson.getString("action"),
-                    groupJson.getString("name"));
-        } else {
-            throw new DecodeException(str, "Can't decode");
+        String type = json.getString("type");
+        Message message;
+        switch (type) {
+            case "chat":
+                message = new ChatMessage("chat",
+                        json.getString("sender"),
+                        json.getString("receiver"),
+                        json.getString("kind"),
+                        json.getLong("time"),
+                        json.getString("content"));
+                break;
+            case "group":
+                message = new GroupMessage("group",
+                        json.getString("action"),
+                        json.getString("name"));
+                break;
+            case "auth":
+                message = new AuthMessage("auth",
+                        json.getString("action"),
+                        json.getString("username"),
+                        json.getString("password"));
+                break;
+            default:
+                throw new DecodeException(str, "Can't decode");
         }
+        System.out.println("Decoded: " + str);
+        return message;
     }
 
     @Override
     public boolean willDecode(String str) {
         try {
-            JSONObject outerJson = new JSONObject(str);
-            JSONObject chatJson = outerJson.optJSONObject("chat");
-            if (chatJson != null) {
-                if (chatJson.optString("target") != null
-                        & chatJson.optString("name") != null
-                        & chatJson.optString("content") != null) {
-                    return true;
-                }
-            }
-            JSONObject groupJson = outerJson.optJSONObject("group");
-            if (groupJson != null) {
-                if (groupJson.optString("action") != null
-                        & groupJson.optString("name") != null) {
-                    return true;
+            JSONObject json = new JSONObject(str);
+            String type = json.optString("type");
+            if (type != null) {
+                switch (type) {
+                    case "chat":
+                        if (json.optString("sender") != null
+                                && json.optString("receiver") != null
+                                && json.optString("kind") != null
+                                && json.optLong("time") != 0L
+                                && json.optString("content") != null) {
+                            return true;
+                        }
+                        break;
+                    case "group":
+                        if (json.optString("action") != null
+                                && json.optString("name") != null) {
+                            return true;
+                        }
+                        break;
+                    case "auth":
+                        if (json.optString("action") != null
+                                && json.optString("username") != null
+                                && json.optString("password") != null) {
+                            return true;
+                        }
+                        break;
                 }
             }
         } catch (JSONException je) {
-            return false;
+            je.printStackTrace();
         }
+        System.out.println("Will not decode: " + str);
         return false;
     }
 
