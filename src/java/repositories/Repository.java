@@ -113,31 +113,37 @@ public class Repository {
                 .getSingleResult();
         String kind = chatMsg.getKind();
         if (kind.equals("user")) {
-            UserBO receiver = em.createNamedQuery("User.get-with-username", UserBO.class)
+            List<UserBO> receivers = em.createNamedQuery("User.get-with-username", UserBO.class)
                     .setParameter("username", chatMsg.getReceiver())
-                    .getSingleResult();
+                    .getResultList();
+            if (receivers.size() != 0) {
+                UserBO receiver = receivers.get(0);
+                // save msg on the database
+                MessageBO messageBO = new MessageBO(
+                        sender,
+                        receiver.getUsername(),
+                        ReceiverType.USER,
+                        chatMsg.getTime(),
+                        chatMsg.getContent()
+                );
+                System.out.println(new Date());
+                System.out.println(messageBO.getTime());
+                em.getTransaction().begin();
+                em.persist(messageBO);
+                em.getTransaction().commit();
 
-            // save msg on the database
-            MessageBO messageBO = new MessageBO(
-                    sender,
-                    receiver.getUsername(),
-                    ReceiverType.USER,
-                    chatMsg.getTime(),
-                    chatMsg.getContent()
-            );
-            System.out.println(new Date());
-            System.out.println(messageBO.getTime());
-            em.getTransaction().begin();
-            em.persist(messageBO);
-            em.getTransaction().commit();
-
-            // send to msg to receiver
-            Session toSession = receiver.getSession();
-            if (toSession != null && toSession.isOpen()) {
-                System.out.println("Send ChatMessage: " + chatMsg.getContent());
-                toSession.getAsyncRemote().sendObject(chatMsg);
+                // send to msg to receiver
+                Session toSession = receiver.getSession();
+                if (toSession != null && toSession.isOpen()) {
+                    System.out.println("Send ChatMessage: " + chatMsg.getContent());
+                    toSession.getAsyncRemote().sendObject(chatMsg);
+                } else {
+                    System.out.println("To-User is not online");
+                }
             } else {
-                System.out.println("To-User is not online");
+                StatusMessage status = new StatusMessage("status", "chat",
+                        false, "Error sending message: User does not exist");
+                session.getAsyncRemote().sendObject(status);
             }
         } else if (kind.equals("group")) {
             GroupBO group = em.createNamedQuery("Group.get-with-name", GroupBO.class)
