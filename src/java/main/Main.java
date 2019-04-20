@@ -16,7 +16,7 @@ public class Main {
     }
 
     private static void runServer() {
-        Server server = new Server("localhost",
+        Server server = new Server("0.0.0.0",
                 8025,
                 "/websockets",
                 ChatEndpoint.class

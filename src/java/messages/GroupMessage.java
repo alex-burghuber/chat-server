@@ -2,12 +2,10 @@ package messages;
 
 public class GroupMessage extends Message {
 
-    private String action;
     private String name;
 
-    public GroupMessage(String type, String action, String name) {
+    public GroupMessage(String type, String name) {
         super(type);
-        this.action = action;
         this.name = name;
     }
 
@@ -19,14 +17,6 @@ public class GroupMessage extends Message {
     @Override
     public void setType(String type) {
         super.setType(type);
-    }
-
-    public String getAction() {
-        return action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
     }
 
     public String getName() {

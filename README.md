@@ -1,5 +1,5 @@
-# chat-server
-Simple Java Websocket Chat-Server
+# Chat Server
+Java Websocket Server for [Chat Client](https://github.com/Alexander-Burghuber/chat-client)
 
 ## API
 
@@ -21,7 +21,6 @@ Simple Java Websocket Chat-Server
 ```json
 {
   "type": "group",
-  "action": "create/join",
   "name": "<name of group>"
 }
 ```
