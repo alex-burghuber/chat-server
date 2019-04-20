@@ -21,7 +21,6 @@ Simple Java Websocket Chat-Server
 ```json
 {
   "type": "group",
-  "action": "create/join",
   "name": "<name of group>"
 }
 ```

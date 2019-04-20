@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "ChatServer_Group")
+@Table(name = "Chat_Group")
 @NamedQueries({
         @NamedQuery(name = "Group.get-with-name", query = "SELECT g FROM GroupBO g WHERE g.name = :name")
 })

@@ -29,7 +29,6 @@ public class MessageDecoder implements Decoder.Text<Message> {
                 break;
             case "group":
                 message = new GroupMessage("group",
-                        json.getString("action"),
                         json.getString("name"));
                 break;
             case "auth":
@@ -62,8 +61,7 @@ public class MessageDecoder implements Decoder.Text<Message> {
                         }
                         break;
                     case "group":
-                        if (json.optString("action") != null
-                                && json.optString("name") != null) {
+                        if (json.optString("name") != null) {
                             return true;
                         }
                         break;

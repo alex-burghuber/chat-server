@@ -5,12 +5,15 @@ import enums.ReceiverType;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "ChatServer_Message")
+@Table(name = "Chat_Message")
 @NamedQueries({
-        @NamedQuery(name = "Message.sender-receiver-ordered", query =
+        @NamedQuery(name = "Message.sender-receiver", query =
                 "SELECT m FROM MessageBO m " +
-                        "WHERE m.sender = :sender " +
-                        "OR (m.receiverName = :receiverName AND m.receiverType = :receiverType)")
+                        "WHERE (m.sender = :sender OR m.receiverName = :receiverName)" +
+                        "AND m.receiverType = :receiverType"),
+        @NamedQuery(name = "Message.get-with-name", query =
+                "SELECT m FROM MessageBO m " +
+                        "WHERE m.receiverName = :receiverName AND m.receiverType = :receiverType")
 })
 public class MessageBO {
 
