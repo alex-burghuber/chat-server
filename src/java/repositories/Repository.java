@@ -63,6 +63,7 @@ public class Repository {
 
         if (users.size() == 1) {
             UserBO user = users.get(0);
+            em.refresh(user);
             if (user.getPassword().equals(password)) {
                 session.getUserProperties().put("username", username);
                 user.setSession(session);
@@ -79,6 +80,7 @@ public class Repository {
 
                 List<MessageBO> groupMessages = null;
                 for (GroupBO group : user.getGroups()) {
+                    System.out.println(user.getUsername() + "-Groups: " + group.getName());
                     List<MessageBO> currGroupMessages = em.createNamedQuery("Message.get-with-name", MessageBO.class)
                             .setParameter("receiverName", group.getName())
                             .setParameter("receiverType", ReceiverType.GROUP)
@@ -95,6 +97,9 @@ public class Repository {
                 }
 
                 for (MessageBO message : allMessages) {
+                    System.out.println("Sender: " + message.getSender().getUsername()
+                            + " Receiver: " + message.getReceiverName()
+                            + " Content: " + message.getContent());
                     ChatMessage chatMsg = new ChatMessage(
                             "chat",
                             message.getSender().getUsername(),
